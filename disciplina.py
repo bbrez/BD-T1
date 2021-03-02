@@ -1,57 +1,39 @@
-from pymongo import ReturnDocument
+import bd
 
-if __name__ == '__main__':
-    pass
-import pymongo
+colecao_disciplina = bd.get_colecao('disciplina')
 
 
-def createDB():
-    nome_disc = input("insira o nome da disciplina\n")
-    nome_prof = input("Insira o nome do professor\n")
-    return {"nomeDisciplina": nome_disc, "nomeProfessor": nome_prof}
+def popula_disciplina():
+    disciplinas = list()
+
+    disciplinas.append({"nomeDisciplina": "Circuitos", "nomeProfessor": "Lucas Oliveira"})
+    disciplinas.append({"nomeDisciplina": "Fisica 1", "nomeProfessor": "Fernanda Nodari"})
+    disciplinas.append({"nomeDisciplina": "Calculo", "nomeProfessor": "Jose da Silva"})
+    disciplinas.append({"nomeDisciplina": "Computacao 1", "nomeProfessor": "Jorge Habib"})
+    disciplinas.append({"nomeDisciplina": "Estatistica", "nomeProfessor": "Carlos dos Santos"})
+    disciplinas.append({"nomeDisciplina": "Engenharia de Software", "nomeProfessor": "Gil Brasil"})
+
+    colecao_disciplina.insert_many(disciplinas)
 
 
-def readDB(database):
-    query = input("por favor digite o nome da disciplina a ser consultada\n")
-    return database.find_one({"nomeDisciplina": query})
+def create_disciplina(nome_disciplina, nome_professor):
+    colecao_disciplina.insert_one({'nomeDisciplina': nome_disciplina, 'nomeProfessor': nome_professor})
 
 
-
-def updateDB(database):
-    print ("Atualizando disciplina")
-    disciplina.find_one_and_update(readDB(database), {"$set": createDB()}, return_document=ReturnDocument.AFTER)
+def read_discipina_todos():
+    return colecao_disciplina.find()
 
 
-def deleteDB(database):
-    query = input("por favor digite o nome da disciplina a ser deletada\n")
-    return database.delete_one({"nomeDisciplina": query})
-
-def printAll(database):
-    printer = database.find({})
-    for item in printer:
-        print(item)
+def read_disciplina(nome_disciplina):
+    return colecao_disciplina.find_one({'nomeDisciplina': nome_disciplina})
 
 
-client = pymongo.MongoClient("mongodb://127.0.0.1:27017/")
-db = client["bd3"]
-disciplina = db["disciplina"]
+def update_disciplina(nome_disciplina, propriedade, nova_prop):
+    if propriedade == 'nomeDisciplina':
+        colecao_disciplina.find_one_and_update({'nomeDisciplina': nome_disciplina}, {'$set': {'nomeDisciplina': nova_prop}})
+    elif propriedade == 'nomeProfessor':
+        colecao_disciplina.find_one_and_update({'nomeDisciplina': nome_disciplina}, {'$set': {'nomeProfessor': nova_prop}})
 
 
-ListDisc = list()
-db.drop_collection("disciplina")
-ListDisc.append({"nomeDisciplina" : "Circuitos", "nomeProfessor" : "Lucas Oliveira"})
-ListDisc.append({"nomeDisciplina" : "Fisica 1", "nomeProfessor" : "Fernanda Nodari"})
-ListDisc.append({"nomeDisciplina" : "Calculo", "nomeProfessor" : "Jose da Silva"})
-ListDisc.append({"nomeDisciplina" : "Computaçao 1", "nomeProfessor" : "Jorge Habib"})
-ListDisc.append({"nomeDisciplina" : "Estatistica", "nomeProfessor" : "Carlos dos Santos"})
-ListDisc.append({"nomeDisciplina" : "Engenharia de Software", "nomeProfessor" : "Gil Brasil"})
-disciplina.insert_many(ListDisc)
-
-"""
-printAll(disciplina)
-disciplina.insert_one(createDB())
-print(readDB(disciplina))
-updateDB(disciplina)
-deleteDB(disciplina)
-print(readDB(disciplina))
-"""
+def delete_disciplina(nome_disciplina):
+    colecao_disciplina.delete_one({'nomeDisciplina': nome_disciplina})
