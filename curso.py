@@ -6,7 +6,7 @@ colecao_cursos = bd.get_colecao('curso')
 def popula_curso():
     lista_cursos = list()
     lista_cursos.append({'nomeCurso': 'Engenharia Eletrica', 'disciplinas': ['Circuitos', 'Fisica 1', 'Calculo']})
-    lista_cursos.append({'nomeCurso': 'Computacao', 'disciplinas': ['Computacao 1', 'Estatistica', 'Engenharia de Software']})
+    lista_cursos.append({'nomeCurso': 'Ciência da Computação', 'disciplinas': ['Computacao 1', 'Estatistica', 'Engenharia de Software']})
 
     colecao_cursos.insert_many(lista_cursos)
 
@@ -21,11 +21,12 @@ def read_curso_todos():
 
 def read_curso(nome_curso):
     curso = colecao_cursos.find_one({'nomeCurso': nome_curso})
-    disciplinas = curso['disciplinas']
-    del curso['disciplinas']
-    curso['disciplinas'] = list()
-    for disc in disciplinas:
-        curso['disciplinas'].append(disciplina.read_disciplina(disc))
+    if curso == 'disciplinas':
+        disciplinas = curso['disciplinas']
+        del curso['disciplinas']
+        curso['disciplinas'] = list()
+        for disc in disciplinas:
+            curso['disciplinas'].append(disciplina.read_disciplina(disc))
     return curso
 
 
