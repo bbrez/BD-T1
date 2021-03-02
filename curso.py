@@ -38,7 +38,11 @@ def delete_curso(nome_curso):
 
 
 def add_disciplina_curso(nome_curso, nome_disciplina):
-    colecao_cursos.find_one_and_update({'nomeCurso': nome_curso}, {'$push': {'disciplinas': nome_disciplina}})
+    if disciplina.read_disciplina(nome_disciplina) is not None:
+        colecao_cursos.find_one_and_update({'nomeCurso': nome_curso}, {'$push': {'disciplinas': nome_disciplina}})
+        return True
+    else:
+        return False
 
 
 def remove_disciplina_curso(nome_curso, nome_disciplina):
